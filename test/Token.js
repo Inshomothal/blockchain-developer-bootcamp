@@ -200,7 +200,6 @@ describe('Token', () => {
         })
 
         describe ('Failure', async () => {
-            // Attempt to transfer too many tokens
             const invalidAmount = tokens(1*10^6) // 100 Millions
             await expect(token.connect(exchange).transferFrom(deployer.address, receiver.address, invalidAmount).to.be.reverted)
         })
