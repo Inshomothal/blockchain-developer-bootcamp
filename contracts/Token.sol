@@ -59,8 +59,6 @@ contract Token {
         balanceOf[_to] = balanceOf[_to] + _value;
 
         emit Transfer(_from, _to, _value);
-
-        
         
     } 
 
