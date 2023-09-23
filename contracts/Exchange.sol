@@ -18,5 +18,4 @@ contract Exchange {
 	// Cancel Orders
 	// Fill Orders
 	// Charge Fees
-    // Track Fee Account 
 }
