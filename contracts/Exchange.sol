@@ -13,6 +13,7 @@ contract Exchange {
 	// Orders Mapping
 	mapping(uint256 => _Order) public orders;
 	uint256 public orderCount;
+	mapping(uint256 => bool) public orderCancelled;
 
 	event Deposit(
         address token,
@@ -70,7 +71,6 @@ contract Exchange {
 		emit Deposit(_token, msg.sender, _amount, tokens[_token][msg.sender]);
 	}
 
-	// Withdraw Tokens
 	function withdrawToken(address _token, uint256 _amount) public {
 		// Ensure user has enough tokens to withdraw
 		require(tokens[_token][msg.sender] >= _amount);
@@ -134,6 +134,14 @@ contract Exchange {
 			block.timestamp);
 
 		// Emit event
+	}
+
+	function cancelOrder(uint256 _id) public {
+		// Fetch order
+		_Order storage _order = orders[_id];
+
+		// Cancel the order
+		orderCancelled[_id] = true;
 	}
 
 	// Fill Orders
