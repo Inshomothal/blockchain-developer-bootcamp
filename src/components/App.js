@@ -1,36 +1,30 @@
 import { useEffect } from 'react';
-import {ethers} from 'ethers';
+import { useDispatch } from 'react-redux';
 import config from '../config.json';
-import TOKEN_ABI from '../abis/Token.json';
-import '../App.css';
+
+import {
+  loadProvider,
+  loadNetwork,
+  loadAccount,
+  loadToken
+} from '../store/interactions';
+
 
 function App() {
 
+  const dispatch = useDispatch()
+
   const loadBlockchainData = async () => {
     // Grab accounts using Metmask with window.ethereum
-    const accounts = await window.ethereum.request({method: 'eth_requestAccounts'})
-    console.log(accounts[0])
+    await loadAccount(dispatch)
 
     // Connect Ethers to blockchain
-    const provider = new ethers.providers.Web3Provider(window.ethereum)
-
-    // Test connection like this.
-    // You can destructure network to the chainID value or object with { chainID }
-    const network = await provider.getNetwork()
-    const chainId = network.chainId
-    console.log(chainId)
-
-    // Test config import
-    console.log(config[chainId])
+    const provider = loadProvider(dispatch)
+    const chainId = await loadNetwork( provider, dispatch )
 
     // Token Smart Contract
     // Using ethers.Contract to connect to blockchain and utilize the abi to interact with the token
-    const token = new ethers.Contract(config[chainId].DAPP.address , TOKEN_ABI , provider)
-    console.log(token.address)
-
-    // Read information of token
-    const symbol = await token.symbol()
-    console.log(symbol)
+    await loadToken(provider, config[chainId].DAPP.address, dispatch)
   }
 
   useEffect(() => {
