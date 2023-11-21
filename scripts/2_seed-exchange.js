@@ -93,7 +93,7 @@ async function main() {
     console.log(`Cancelled order from ${user1.address}\n`)
 
     // Wait 1 second
-    await wait(1)
+    //await wait(1)
 
     ////////////////////////////////////////////////////////////////////
     // Seed filled orders
@@ -115,7 +115,7 @@ async function main() {
         console.log(`Filled order from ${user1.address}\n`)
 
         // Wait 1 second
-        await wait(1)
+        //await wait(1)
 
     }
 
@@ -177,7 +177,7 @@ async function main() {
         console.log(`Made order from ${user1.address}\n`)
 
         // Wait 1 second
-        await wait(1)
+        //await wait(1)
 
         // User 2 makes 10 orders
         transaction = await exchange.connect(user2).makeOrder(DAPP.address, tokens(10), mETH.address, tokens(10*i))
@@ -186,7 +186,7 @@ async function main() {
         console.log(`Made order from ${user2.address}\n`)
 
         // Wait 1 second
-        await wait(1)
+        //await wait(1)
     }
 
 
