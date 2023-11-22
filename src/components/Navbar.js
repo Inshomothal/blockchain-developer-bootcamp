@@ -7,9 +7,8 @@ import config from '../config.json';
 
 const Navbar = () => {
     const provider = useSelector(state => state.provider.connection)
-    let chainId = useSelector(state => state.provider.chainId)
-    console.log(`chainId is ${chainId}`)
     const account = useSelector(state => state.provider.account)
+    const chainId = useSelector(state => state.provider.chainId)
     const balance = useSelector(state => state.provider.balance)
 
     const dispatch = useDispatch()
@@ -30,6 +29,7 @@ const Navbar = () => {
         })
     }
 
+
     return(
       <div className='exchange__header grid'>
         <div className='exchange__header--brand flex'>
@@ -48,7 +48,7 @@ const Navbar = () => {
                     <option value='0xaa36a7'>Sepolia</option>
                 </select>
             ) : (
-                `ChainId is null`
+                `ChainId is ${chainId}`
             )}
             
             
