@@ -11,6 +11,7 @@ import {
 } from '../store/interactions';
 
 import Navbar from './Navbar';
+import Markets from './Markets';
 
 
 function App() {
@@ -24,7 +25,6 @@ function App() {
 
     // Fetch current network's chainId(e.g. hardhat:31337, kovan:42)
     const chainId = await loadNetwork( provider, dispatch )
-    console.log(`app.js chainId is ${chainId}`)
 
     // Reload page when network changes
     window.ethereum.on('chainChanged', () => {
@@ -58,7 +58,7 @@ function App() {
       <main className='exchange grid'>
         <section className='exchange__section--left grid'>
 
-          {/* Markets */}
+          <Markets />
 
           {/* Balance */}
 
