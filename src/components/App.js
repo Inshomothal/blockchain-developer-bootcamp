@@ -7,7 +7,8 @@ import {
   loadNetwork,
   loadAccount,
   loadTokens,
-  loadExhange
+  loadExhange,
+  subscribeToEvents
 } from '../store/interactions';
 
 import Navbar from './Navbar';
@@ -44,8 +45,13 @@ function App() {
 
     // Load exchange smart contract
     const exchangeConfig = config[chainId].exchange
-    await loadExhange(provider, exchangeConfig.address, dispatch)
+    const exchange = await loadExhange(provider, exchangeConfig.address, dispatch)
+
+    // Listen to events
+    subscribeToEvents(exchange, dispatch)
   }
+
+
 
   useEffect(() => {
     loadBlockchainData()

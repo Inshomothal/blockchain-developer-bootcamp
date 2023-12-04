@@ -87,7 +87,7 @@ async function main() {
     console.log(`Made order from ${user1.address}\n`)
 
     // User 1 cancels order
-    orderId = result.events[0].args.id
+    orderId = await result.events[0].args.id
     transaction = await exchange.connect(user1).cancelOrder(orderId)
     result = await transaction.wait()
     console.log(`Cancelled order from ${user1.address}\n`)
