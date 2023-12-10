@@ -66,6 +66,11 @@ export const subscribeToEvents = async (exchange, dispatch) => {
         dispatch({ type: 'TRANSFER_SUCCESS', event })
 
     })
+
+    exchange.on('Order', (id, user, tokenGet, amountGet, tokenGive, amountGive, timestamp, event) => {
+        const order = event.args
+        dispatch({ type: 'NEW_ORDER_SUCCESS', order, event })
+    })
 }
 
 
@@ -108,9 +113,46 @@ export const transferTokens = async (provider, exchange, transferType, token, am
         transaction = await exchange.connect(signer).withdrawToken(token.address, amountToTransfer)
     }
 
-    } catch (error) {
-        console.log(`Token Transfer Debug: `, error)
-    }
-
     await transaction.wait()
+
+    } catch (error) {
+        dispatch({type: 'TRANSFER_FAIL'})
+    }
+}
+
+// --------------------------------------------------------------------------------------
+// ORDERS (BUY & SELL)
+
+export const makeBuyOrder = async (provider, exchange, token, order, dispatch) => {
+    const tokenGet = token[0].address
+    const amountGet = ethers.utils.parseUnits(order.amount.toString(), 18)
+    const tokenGive = token[1].address
+    const amountGive = ethers.utils.parseUnits((order.amount * order.price).toString(), 18)
+
+    dispatch({type: 'NEW_ORDER_REQUEST'})
+
+    try {
+        const signer = await provider.getSigner()
+        const transaction = await exchange.connect(signer).makeOrder(tokenGet, amountGet, tokenGive, amountGive)
+        await transaction.wait()
+    } catch (error) {
+        dispatch({type: 'NEW_ORDER_FAIL'})
+    }
+}
+
+export const makeSellOrder = async (provider, exchange, token, order, dispatch) => {
+    const tokenGet = token[1].address
+    const amountGet = ethers.utils.parseUnits((order.amount * order.price).toString(), 18)
+    const tokenGive = token[0].address
+    const amountGive = ethers.utils.parseUnits(order.amount.toString(), 18)
+
+    dispatch({type: 'NEW_ORDER_REQUEST'})
+
+    try {
+        const signer = await provider.getSigner()
+        const transaction = await exchange.connect(signer).makeOrder(tokenGet, amountGet, tokenGive, amountGive)
+        await transaction.wait()
+    } catch (error) {
+        dispatch({type: 'NEW_ORDER_FAIL'})
+    }
 }
