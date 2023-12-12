@@ -171,7 +171,7 @@ async function main() {
     // User 1 makes orders
     for (let i = 1; i <= 10; i++) {
         // User 1 makes 10 orders
-        transaction = await exchange.connect(user1).makeOrder(mETH.address, tokens(10*i), DAPP.address, tokens(10))
+        transaction = await exchange.connect(user1).makeOrder(mETH.address, tokens(Math.max(1,random(1,10))), DAPP.address, tokens(Math.max(1,random(1,100)*i)))
         result = await transaction.wait()
 
         console.log(`Made order from ${user1.address}\n`)
@@ -180,7 +180,7 @@ async function main() {
         //await wait(1)
 
         // User 2 makes 10 orders
-        transaction = await exchange.connect(user2).makeOrder(DAPP.address, tokens(10), mETH.address, tokens(10*i))
+        transaction = await exchange.connect(user2).makeOrder(DAPP.address, tokens(Math.max(1,random(1,110)*i)), mETH.address, tokens(Math.max(1,random(2,10))))
         result = await transaction.wait()
 
         console.log(`Made order from ${user2.address}\n`)

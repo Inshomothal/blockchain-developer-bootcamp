@@ -7,6 +7,18 @@ import sort from '../assets/sort.svg'
 // Import selectors
 import { orderBookSelector } from "../store/selectors";
 
+// Format Price
+const finalPrice = (order) => {
+  let price = order.tokenPrice.toString();
+  let nonZeroIndex = price.indexOf(price.split('').find(char => char !== '0' && char !== '.'));
+  let finalPrice = nonZeroIndex !== -1 ? price.slice(0, nonZeroIndex + 4) : '0';
+  if (price.length > nonZeroIndex + 4) {
+    finalPrice += '...';
+  }
+
+  return finalPrice
+}
+
 
 const OrderBook = () => {
 
@@ -39,7 +51,7 @@ const OrderBook = () => {
             {orderBook && orderBook.sellOrders.map((order, index) => (
               <tr key={index}>
                 <td>{order.token0Amount}</td>
-                <td style={{ color: `${order.orderTypeClass}` }}>{order.tokenPrice}</td>
+                <td style={{ color: `${order.orderTypeClass}` }}>{finalPrice(order)}</td>
                 <td>{order.token1Amount}</td>
               </tr>
             ))}
@@ -68,7 +80,7 @@ const OrderBook = () => {
           {orderBook && orderBook.buyOrders.map((order, index) => (
               <tr key={index}>
                 <td>{order.token0Amount}</td>
-                <td style={{ color: `${order.orderTypeClass}` }}>{order.tokenPrice}</td>
+                <td style={{ color: `${order.orderTypeClass}` }}>{finalPrice(order)}</td>
                 <td>{order.token1Amount}</td>
               </tr>
             ))}
