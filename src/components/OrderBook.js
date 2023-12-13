@@ -4,20 +4,11 @@ import { useSelector } from "react-redux";
 // Import Assets
 import sort from '../assets/sort.svg'
 
-// Import selectors
+// Import selectors and functions
 import { orderBookSelector } from "../store/selectors";
+import { finalPrice } from "../store/helpers";
 
-// Format Price
-const finalPrice = (order) => {
-  let price = order.tokenPrice.toString();
-  let nonZeroIndex = price.indexOf(price.split('').find(char => char !== '0' && char !== '.'));
-  let finalPrice = nonZeroIndex !== -1 ? price.slice(0, nonZeroIndex + 4) : '0';
-  if (price.length > nonZeroIndex + 4) {
-    finalPrice += '...';
-  }
 
-  return finalPrice
-}
 
 
 const OrderBook = () => {

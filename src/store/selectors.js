@@ -53,7 +53,7 @@ const decorateOrder = (order, tokens) => {
 
     // This was  tutorial funcion
     // const precision = 10^5
-    let tokenPrice = (token1Amount / token0Amount)
+    let tokenPrice = (token0Amount / token1Amount)
 
     return ({
         ...order,
@@ -84,6 +84,29 @@ const decorateOrderBookOrders = (orders, tokens) => {
         })
     )
 }
+
+const decorateFilledOrders = (orders, tokens) => {
+    // Track previous order to comare history
+    let previousOrder = orders[0]
+
+    return(
+        orders.map((order) => {
+        // decorate each individual order
+        order = decorateOrder(order, tokens)
+        order = decorateFilledOrder(order, previousOrder)
+        previousOrder = order // Update the previous order once it's decorated
+        return order
+        })
+    )
+}
+
+const decorateFilledOrder = (order, previousOrder) => {
+    return({
+        ...order,
+        tokenPriceClass: (order.tokenPrice >= previousOrder.tokenPrice ? GREEN : RED)
+    })
+}
+
 
 // --------------------------------------------------------------------------------------
 // Setup Price Chart Data
@@ -117,6 +140,34 @@ const buildGraphData = (orders) => {
     })
     return graphData
 }
+
+// --------------------------------------------------------------------------------------
+// ALL FILLED ORDERS
+
+export const filledOrdersSelector = createSelector(
+    filledOrders,
+    tokens,
+    (orders, tokens) => {
+        if (!tokens[0] || !tokens[1]) { return }
+        orders = orders.filter((o) => o.tokenGet === tokens[0].address || o.tokenGet === tokens[1].address)
+        orders = orders.filter((o) => o.tokenGive === tokens[0].address || o.tokenGive === tokens[1].address)
+
+        // [X] Step 1: sort orders by time ascending
+        // [X] Step 2: decorate orders - add display attributes
+        // Step 3: sort orders by time descending for UI
+
+        // Sort orders by timestamp ascending
+        orders = orders.sort((a,b) => a.timestamp - b.timestamp)
+
+        // Decorate the orders
+        orders = decorateFilledOrders(orders, tokens)
+
+        // Sort orders date descending for display
+        orders = orders.sort((a,b) => b.timestamp - a.timestamp)
+
+        return orders
+    }
+)
 
 // --------------------------------------------------------------------------------------
 // ORDER BOOK
