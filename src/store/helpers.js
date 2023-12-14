@@ -8,4 +8,18 @@ export const finalPrice = (order) => {
     }
   
     return finalPrice
-  } 
+  }
+
+  // export const tabHandler = (e) => {
+  //   if(e.target.className !== depositRef.current.className){
+  //     e.target.className = 'tab tab--active'
+  //     depositRef.current.className = 'tab'
+  //     setIsDeposit(false)
+  //   } else {
+  //     e.target.className = 'tab tab--active'
+  //     withdrawRef.current.className = 'tab'
+  //     setIsDeposit(true)
+  //   }
+
+  //   return tabHandler
+  // }
