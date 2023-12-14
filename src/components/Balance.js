@@ -1,5 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { useEffect, useRef, useState } from 'react';
+import { tabHandler } from '../store/helpers';
 import {
   loadBalances,
   transferTokens
@@ -27,20 +28,19 @@ const Balance = () => {
   const symbols = useSelector(state => state.tokens.symbols) // Array of token symbols
   const tokenBalances = useSelector(state => state.tokens.balances) // Array of token balances
 
-  const depositRef = useRef(null)
-  const withdrawRef = useRef(null)
+  const tabRef = [useRef(null), useRef(null)]
 
-  const tabHandler = (e) => {
-    if(e.target.className !== depositRef.current.className){
-      e.target.className = 'tab tab--active'
-      depositRef.current.className = 'tab'
-      setIsDeposit(false)
-    } else {
-      e.target.className = 'tab tab--active'
-      withdrawRef.current.className = 'tab'
-      setIsDeposit(true)
-    }
-  }
+  // const tabHandler = (e) => {
+  //   if(e.target.className !== depositRef.current.className){
+  //     e.target.className = 'tab tab--active'
+  //     depositRef.current.className = 'tab'
+  //     setIsDeposit(false)
+  //   } else {
+  //     e.target.className = 'tab tab--active'
+  //     withdrawRef.current.className = 'tab'
+  //     setIsDeposit(true)
+  //   }
+  // }
 
   const amountHandler = (e, token) => {
     if (token.address === tokens[0].address){
@@ -89,15 +89,15 @@ const Balance = () => {
     if (exchange && tokens[0] && tokens[1] && account){
           loadBalances(exchange, tokens, dispatch, account)
       }
-  }, [exchange, tokens, account, transferInProgress])
+  }, [exchange, tokens, account, transferInProgress, dispatch])
 
   return (
     <div className='component exchange__transfers'>
       <div className='component__header flex-between'>
         <h2>Balance</h2>
         <div className='tabs'>
-          <button onClick={tabHandler} ref={depositRef} className='tab tab--active'>Deposit</button>
-          <button onClick={tabHandler} ref={withdrawRef} className='tab'>Withdraw</button>
+          <button onClick={(e) => tabHandler(e, tabRef, setIsDeposit)} ref={tabRef[0]} className='tab tab--active'>Deposit</button>
+          <button onClick={(e) => tabHandler(e, tabRef, setIsDeposit)} ref={tabRef[1]} className='tab'>Withdraw</button>
         </div>
       </div>
 

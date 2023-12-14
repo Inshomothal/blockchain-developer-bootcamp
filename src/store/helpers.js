@@ -8,18 +8,30 @@ export const finalPrice = (order) => {
     }
   
     return finalPrice
+}
+
+export const tabHandler = (e, tabRef, balanceUseState=undefined, txUseState=undefined) => {
+  if(balanceUseState) {
+    if(e.target.className !== tabRef[0].current.className){
+      e.target.className = 'tab tab--active'
+      tabRef[0].current.className = 'tab'
+      balanceUseState(false)
+    } else {
+      e.target.className = 'tab tab--active'
+      tabRef[1].current.className = 'tab'
+      balanceUseState(true)
+    }
   }
-
-  // export const tabHandler = (e) => {
-  //   if(e.target.className !== depositRef.current.className){
-  //     e.target.className = 'tab tab--active'
-  //     depositRef.current.className = 'tab'
-  //     setIsDeposit(false)
-  //   } else {
-  //     e.target.className = 'tab tab--active'
-  //     withdrawRef.current.className = 'tab'
-  //     setIsDeposit(true)
-  //   }
-
-  //   return tabHandler
-  // }
+  if(txUseState) {
+    if(e.target.className !== tabRef[0].current.className){
+      e.target.className = 'tab tab--active'
+      tabRef[0].current.className = 'tab'
+      txUseState(false)
+    } else {
+      e.target.className = 'tab tab--active'
+      tabRef[1].current.className = 'tab'
+      txUseState(true)
+    }
+  }
+  return tabHandler
+}

@@ -65,51 +65,6 @@ const decorateOrder = (order, tokens) => {
     })
 }
 
-const decorateOrderBookOrder = (order, tokens) => {
-    const orderType = order.tokenGive === tokens[1].address ? 'buy' : 'sell'
-
-    return ({
-        ...order,
-        orderType,
-        orderTypeClass: (orderType === 'buy' ? GREEN : RED),
-        orderFillAction: (orderType === 'buy' ? 'sell' : 'buy')
-    })
-}
-
-const decorateOrderBookOrders = (orders, tokens) => {
-    return (
-        orders.map((order) => {
-            order = decorateOrder(order, tokens)
-            order = decorateOrderBookOrder(order, tokens)
-            return (order)
-        })
-    )
-}
-
-const decorateFilledOrders = (orders, tokens) => {
-    // Track previous order to comare history
-    let previousOrder = orders[0]
-
-    return(
-        orders.map((order) => {
-        // decorate each individual order
-        order = decorateOrder(order, tokens)
-        order = decorateFilledOrder(order, previousOrder)
-        previousOrder = order // Update the previous order once it's decorated
-        return order
-        })
-    )
-}
-
-const decorateFilledOrder = (order, previousOrder) => {
-    return({
-        ...order,
-        tokenPriceClass: (order.tokenPrice >= previousOrder.tokenPrice ? GREEN : RED)
-    })
-}
-
-
-
 const filterOrderByToken = (orders, tokens) => {
     if(!tokens[0] || !tokens[1]) { return }
 
@@ -119,40 +74,6 @@ const filterOrderByToken = (orders, tokens) => {
     orders.push(...originalOrders.filter((o) => o.tokenGive === tokens[0].address))
 
     return orders
-}
-
-
-// --------------------------------------------------------------------------------------
-// Setup Price Chart Data
-
-const buildGraphData = (orders) => {
-    orders = groupBy(orders, (o) => moment.unix(o.timestamp).startOf('hour').format())
-
-    // Get each hour where data exists
-    const hours = Object.keys(orders)
-
-    const graphData = hours.map((hour) => {
-        // Fetch all orders from current hour
-        const group = orders[hour]
-
-        // Calculate price values: open, high, low, close
-        const open = group[0] // First order
-        const high = maxBy(group, 'tokenPrice') // Highest price
-        const low = minBy(group, 'tokenPrice') // Lowest price
-        const close = group[group.length - 1] // Last order
-
-
-        return({
-            x: new Date(hour),
-            y: [
-                open.tokenPrice,
-                high.tokenPrice,
-                low.tokenPrice,
-                close.tokenPrice
-            ] // Arranging the candlestick data
-        })
-    })
-    return graphData
 }
 
 // --------------------------------------------------------------------------------------
@@ -177,14 +98,11 @@ export const myOpenOrdersSelector = createSelector(
         // Sort orders by date descending for display
         orders = orders.sort((a,b) => b.timestamp - a.timestamp)
 
-        console.log(orders)
-
         return orders
 
     }
 )
 
-// Move these to decorated section
 const decorateMyOpenOrders = (orders, tokens) => {
     return(
         orders.map((order) => {
@@ -203,6 +121,40 @@ const decorateMyOpenOrder = (order, tokens) => {
         ...order,
         orderType,
         orderTypeClass: (orderType === 'buy' ? GREEN : RED),
+    })
+}
+
+// --------------------------------------------------------------------------------------
+// MY FILLED ORDERS
+
+export const myFilledOrdersSelector = createSelector(
+    filledOrders,
+    tokens,
+    (orders, tokens) => {
+        if (!tokens[0] || !tokens[1]) { return }
+        
+        orders = orders.filter((o) => o.user === account || o.creator === account)
+        console.log(orders)
+
+        return orders
+    }
+)
+
+const decorateMyFilledOrders = (orders, tokens) => {
+    // Track previous order to comare history
+    let previousOrder = orders[0]
+
+    return(
+        orders.map((order) => {
+        
+        return order
+        })
+    )
+}
+
+const decorateMyFilledOrder = (order, previousOrder) => {
+    return({
+        ...order,
     })
 }
 
@@ -232,6 +184,28 @@ export const filledOrdersSelector = createSelector(
         return orders
     }
 )
+
+const decorateFilledOrders = (orders, tokens) => {
+    // Track previous order to comare history
+    let previousOrder = orders[0]
+
+    return(
+        orders.map((order) => {
+        // decorate each individual order
+        order = decorateOrder(order, tokens)
+        order = decorateFilledOrder(order, previousOrder)
+        previousOrder = order // Update the previous order once it's decorated
+        return order
+        })
+    )
+}
+
+const decorateFilledOrder = (order, previousOrder) => {
+    return({
+        ...order,
+        tokenPriceClass: (order.tokenPrice >= previousOrder.tokenPrice ? GREEN : RED)
+    })
+}
 
 // --------------------------------------------------------------------------------------
 // ORDER BOOK
@@ -265,6 +239,27 @@ export const orderBookSelector = createSelector(
         return orders
     }
 )
+
+const decorateOrderBookOrder = (order, tokens) => {
+    const orderType = order.tokenGive === tokens[1].address ? 'buy' : 'sell'
+
+    return ({
+        ...order,
+        orderType,
+        orderTypeClass: (orderType === 'buy' ? GREEN : RED),
+        orderFillAction: (orderType === 'buy' ? 'sell' : 'buy')
+    })
+}
+
+const decorateOrderBookOrders = (orders, tokens) => {
+    return (
+        orders.map((order) => {
+            order = decorateOrder(order, tokens)
+            order = decorateOrderBookOrder(order, tokens)
+            return (order)
+        })
+    )
+}
 
 // --------------------------------------------------------------------------------------
 // PRICE CHART
@@ -304,3 +299,33 @@ export const priceChartSelector = createSelector(
         })
     }
 )
+
+const buildGraphData = (orders) => {
+    orders = groupBy(orders, (o) => moment.unix(o.timestamp).startOf('hour').format())
+
+    // Get each hour where data exists
+    const hours = Object.keys(orders)
+
+    const graphData = hours.map((hour) => {
+        // Fetch all orders from current hour
+        const group = orders[hour]
+
+        // Calculate price values: open, high, low, close
+        const open = group[0] // First order
+        const high = maxBy(group, 'tokenPrice') // Highest price
+        const low = minBy(group, 'tokenPrice') // Lowest price
+        const close = group[group.length - 1] // Last order
+
+
+        return({
+            x: new Date(hour),
+            y: [
+                open.tokenPrice,
+                high.tokenPrice,
+                low.tokenPrice,
+                close.tokenPrice
+            ] // Arranging the candlestick data
+        })
+    })
+    return graphData
+}
