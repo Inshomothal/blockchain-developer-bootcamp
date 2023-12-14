@@ -14,6 +14,10 @@ const Transactions = () => {
   const myOpenOrders = useSelector(myOpenOrdersSelector)
   const myFilledOrders = useSelector(myFilledOrdersSelector)
 
+  
+
+
+
   const tabRef = [useRef(null), useRef(null)]
 
     return (
@@ -22,13 +26,13 @@ const Transactions = () => {
           <div>
             <div className='component__header flex-between'>
               <h2>My Orders</h2>
-    
+
               <div className='tabs'>
                 <button onClick={(e) => tabHandler(e, tabRef, undefined, setShowMyOrders)} ref={tabRef[0]} className='tab tab--active'>Orders</button>
                 <button onClick={(e) => tabHandler(e, tabRef, undefined, setShowMyOrders)} ref={tabRef[1]} className='tab'>Trades</button>
               </div>
             </div>
-  
+
             <table> {!symbols ? (
               <p>error</p>
             ) : (
@@ -40,9 +44,7 @@ const Transactions = () => {
                 </tr>
               </thead>
             )}
-              
               <tbody>
-
                 {!account || myOpenOrders.length === 0 ? (
                   <Banner text='No open orders'/>
                 ) : (
@@ -55,7 +57,6 @@ const Transactions = () => {
                     </tr>)
                   })
                 )}
-                
               </tbody>
             </table>
           </div>
@@ -63,13 +64,13 @@ const Transactions = () => {
           <div>
             <div className='component__header flex-between'> 
               <h2>My Transactions</h2>
-    
+
               <div className='tabs'>
                 <button onClick={(e) => tabHandler(e, tabRef, undefined, setShowMyOrders)} ref={tabRef[0]} className='tab tab--active'>Orders</button>
                 <button onClick={(e) => tabHandler(e, tabRef, undefined, setShowMyOrders)} ref={tabRef[1]} className='tab'>Trades</button>
               </div>
             </div>
-    
+
             <table>
               <thead>
                 <tr>
@@ -79,21 +80,23 @@ const Transactions = () => {
                 </tr>
               </thead>
               <tbody>
-    
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-    
+                {myFilledOrders && myFilledOrders.map((order, index) => {
+                  return(
+                    <tr key={index}>
+                      <td>{order.formattedTimestamp}</td>
+                      <td style={{color: `${order.orderClass}`}}>{order.orderSign}{order.token0Amount}</td>
+                      <td>{finalPrice(order)}</td>
+                    </tr>)
+                })
+              }
+                
+
               </tbody>
             </table>
     
           </div>
         )}
-          
-    
-          
+
       </div>
     )
   }

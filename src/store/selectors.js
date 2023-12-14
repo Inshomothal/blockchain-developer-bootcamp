@@ -70,8 +70,15 @@ const filterOrderByToken = (orders, tokens) => {
 
     // Filter orders by selected tokens
     let originalOrders = orders
-    orders = originalOrders.filter((o) => o.tokenGet === tokens[0].address)
-    orders.push(...originalOrders.filter((o) => o.tokenGive === tokens[0].address))
+
+    // Grab only orders that are for the selected tokens
+    orders = originalOrders.filter((o) => o.tokenGet === tokens[0].address || o.tokenGet === tokens[1].address)
+    orders.push(...originalOrders.filter((o) => o.tokenGive === tokens[0].address || o.tokenGive === tokens[1].address))
+
+    // Now sort by selected tokens
+    let filteredOrders = orders
+    orders = filteredOrders.filter((o) => o.tokenGet === tokens[0].address)
+    orders.push(...filteredOrders.filter((o) => o.tokenGive === tokens[0].address))
 
     return orders
 }
@@ -130,31 +137,50 @@ const decorateMyOpenOrder = (order, tokens) => {
 export const myFilledOrdersSelector = createSelector(
     filledOrders,
     tokens,
-    (orders, tokens) => {
+    account,
+    (orders, tokens, account) => {
         if (!tokens[0] || !tokens[1]) { return }
         
         orders = orders.filter((o) => o.user === account || o.creator === account)
-        console.log(orders)
+        // Filter orders by token addresses
+        filterOrderByToken(orders, tokens)
 
-        return orders
+        // Sort by date ascending
+        orders = orders.sort((a,b) => b.timestamp - a.timestamp)
+
+        // Decorate orders - add display attributes
+        orders = decorateMyFilledOrders(orders, account, tokens)
+
+        return (orders)
     }
 )
 
-const decorateMyFilledOrders = (orders, tokens) => {
-    // Track previous order to comare history
-    let previousOrder = orders[0]
-
+const decorateMyFilledOrders = (orders, account, tokens) => {
     return(
         orders.map((order) => {
-        
+            order = decorateOrder(order, tokens)
+            order = decorateMyFilledOrder(order, account, tokens)
         return order
         })
     )
 }
 
-const decorateMyFilledOrder = (order, previousOrder) => {
+const decorateMyFilledOrder = (order, account, tokens) => {
+    const myOrder = order.creator === account
+
+    let orderType
+    if (myOrder) {
+        orderType = order.tokenGive === tokens[1].address ? 'buy' : 'sell'
+    } else {
+        orderType = order.tokenGive === tokens[1].address ? 'sell' : 'buy'
+    }
+
+
     return({
         ...order,
+        orderType,
+        orderTypeClass: (orderType === 'buy' ? GREEN : RED),
+        orderSign: (orderType === 'buy' ? '+' : '-')
     })
 }
 
