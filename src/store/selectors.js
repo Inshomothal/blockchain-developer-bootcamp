@@ -68,17 +68,13 @@ const decorateOrder = (order, tokens) => {
 const filterOrderByToken = (orders, tokens) => {
     if(!tokens[0] || !tokens[1]) { return }
 
-    // Filter orders by selected tokens
-    let originalOrders = orders
 
     // Grab only orders that are for the selected tokens
-    orders = originalOrders.filter((o) => o.tokenGet === tokens[0].address || o.tokenGet === tokens[1].address)
-    orders.push(...originalOrders.filter((o) => o.tokenGive === tokens[0].address || o.tokenGive === tokens[1].address))
+    orders = orders.filter((o) => o.tokenGet === tokens[0].address || o.tokenGet === tokens[1].address)
+    orders = orders.filter((o) => o.tokenGive === tokens[0].address || o.tokenGive === tokens[1].address)
 
     // Now sort by selected tokens
-    let filteredOrders = orders
-    orders = filteredOrders.filter((o) => o.tokenGet === tokens[0].address)
-    orders.push(...filteredOrders.filter((o) => o.tokenGive === tokens[0].address))
+    orders.sort((a,b) => a.tokenGet === tokens[0].address ? ( a.tokenGet - b.tokenGet ):( b.tokenGet - a.tokenGet))
 
     return orders
 }
