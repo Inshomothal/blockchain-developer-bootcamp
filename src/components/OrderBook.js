@@ -26,6 +26,8 @@ const OrderBook = () => {
     fillOrder(provider, exchange, order, dispatch)
   }
 
+  // TODO: Properly align sell orders in orderbook
+  // TODO: Check if buy orders in orderbook need proper aligning
   return (
     <div className="component exchange__orderbook">
       <div className='component__header flex-between'>

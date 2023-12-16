@@ -22,7 +22,6 @@ const Navbar = () => {
     }
 
     const networkHandler = async (e) => {
-        console.log(e.target.value)
         await window.ethereum.request({
             method: 'wallet_switchEthereumChain',
             params: [{ chainId: e.target.value }]
@@ -62,13 +61,13 @@ const Navbar = () => {
                     "0 ETH"
                 )}</p>
             {account ? (
-                <a 
+                <a
                 href={config[chainId] ? `${config[chainId].explorerURL}/address/${account}` : '#'}
                 target = '_blank'
-                rel='norefferer'
+                rel='noreferrer'
                 >
                     {account.slice(0,7) + '...' + account.slice(37,42)}
-                    <Blockies 
+                    <Blockies
                     account={account}
                     seed={account}
                     size={10}

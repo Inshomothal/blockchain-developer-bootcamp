@@ -42,20 +42,25 @@ const Transactions = () => {
               </div>
             </div>
 
-            <table> {!symbols ? (
-              <p>error</p>
-            ) : (
-              <thead>
-                <tr>
-                  <th>{symbols[0]}<img src={sort} alt="Sort" /></th>
-                  <th>{symbols[0]}/{symbols[1]}<img src={sort} alt="Sort" /></th>
-                  <th>Cancel?</th>
-                </tr>
-              </thead>
-            )}
+            <table>
+              {!symbols ? (
+                <p>error</p>
+              ) : (
+                <thead>
+                  <tr>
+                    <th>{symbols[0]}<img src={sort} alt="Sort" /></th>
+                    <th>{symbols[0]}/{symbols[1]}<img src={sort} alt="Sort" /></th>
+                    <th>Cancel?</th>
+                  </tr>
+                </thead>
+              )}
               <tbody>
                 {!account || myOpenOrders.length === 0 ? (
-                  <Banner text='No open orders'/>
+                  <tr>
+                    <td>
+                    <Banner text='No open orders'/>
+                    </td>
+                  </tr>
                 ) : (
                   myOpenOrders && myOpenOrders.map((order, index) => {
                     return(
@@ -98,8 +103,6 @@ const Transactions = () => {
                     </tr>)
                 })
               }
-                
-
               </tbody>
             </table>
     

@@ -5,8 +5,9 @@ import { ethers } from "ethers";
 import moment from 'moment'
 
 // State inputs
-const tokens = state => get(state, 'tokens.contracts')
 const account = state => get(state, 'provider.account')
+const tokens = state => get(state, 'tokens.contracts')
+const events = state => get(state, 'exchange.events')
 
 // Order colors
 const GREEN = '#25CE8F'
@@ -78,6 +79,18 @@ const filterOrderByToken = (orders, tokens) => {
 
     return orders
 }
+
+// --------------------------------------------------------------------------------------
+// MY EVENTS
+
+export const myEventsSelector = createSelector(
+    account,
+    events,
+    (account, events) => {
+        events = events.filter((e) => e.args.user === account)
+        return events
+    }
+)
 
 // --------------------------------------------------------------------------------------
 // MY OPEN ORDERS

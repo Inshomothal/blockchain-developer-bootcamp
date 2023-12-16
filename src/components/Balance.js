@@ -48,8 +48,6 @@ const Balance = () => {
     } else {
       settoken2TransferAmount(e.target.value)
     }
-    console.log({token2TransferAmount})
-    console.log({ token1TransferAmount })
   }
 
   // [x] Step 1: Do transfer
@@ -143,7 +141,7 @@ const Balance = () => {
         </div>
 
         <form onSubmit={(e) => {isDeposit ? (depositHandler(e, tokens[1])) : (withdrawHandler(e, tokens[1]))}}>
-          <label htmlFor="token1"></label>
+          <label htmlFor="token1">{symbols && symbols[1]} Amount</label>
           <input
           type="text"
           id='token1'
