@@ -42,6 +42,26 @@
         "network": "Kovan",
         "explorerURL": "https://kovan.etherscan.io/"
 
+    },
+    "80001":{
+        "network": "Mumbai",
+        "exchange":{
+            "address": "0x128F0A8A32171E8F062d5b583C0ea7f940bE654c"
+        },
+
+        "DAPP":{
+            "address": "0xc10cA5D5164071FF7DE84F6853473b28CCb58758"
+        },
+
+        "mETH":{
+            "address": "0x286Bed686d86f6eafed2260F8c7B50F65280dbeF"
+        },
+
+        "mDAI":{
+            "address": "0x1bEE724Af33Fa32f32636339fcB42D6e44EbEfe5"
+        },
+        "explorerURL": "https://mumbai.polygonscan.com/"
+        
     }
     
 }
