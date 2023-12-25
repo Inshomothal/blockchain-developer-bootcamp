@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import config from '../config.json';
 
 import {
@@ -24,6 +24,7 @@ import Alert from './Alert';
 
 
 function App() {
+  const account = useSelector(state => state.provider.account)
 
   const dispatch = useDispatch()
 
@@ -58,7 +59,7 @@ function App() {
     loadAllOrders(provider, exchange, dispatch)
 
     // Listen to events
-    subscribeToEvents(exchange, dispatch)
+    subscribeToEvents(exchange, dispatch, provider, account)
   }
 
 

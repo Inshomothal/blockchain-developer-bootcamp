@@ -2,6 +2,21 @@ import {ethers} from 'ethers';
 import TOKEN_ABI from '../abis/Token.json';
 import EXCHANGE_ABI from '../abis/Exhange.json';
 
+let tempHolder
+
+const updateBalance = async (provider, dispatch, account) => {
+    let balance
+    try {
+        balance = await provider.getBalance(account)
+        balance = ethers.utils.formatEther(balance)
+        tempHolder = balance
+    } catch (e) {
+        balance = tempHolder? tempHolder : 0.0
+    }
+
+    dispatch({type: 'ETHERS_BALANCE_LOADED', balance})
+}
+
 export const loadProvider = (dispatch) => {
     const connection = new ethers.providers.Web3Provider(window.ethereum)
     dispatch({type: 'PROVIDER_LOADED', connection })
@@ -22,10 +37,7 @@ export const loadAccount = async (provider, dispatch) => {
 
     dispatch({type: 'ACCOUNT_LOADED', account})
 
-    let balance = await provider.getBalance(account)
-    balance = ethers.utils.formatEther(balance)
-
-    dispatch({type: 'ETHERS_BALANCE_LOADED', balance})
+    updateBalance(provider, dispatch, account)
 
     return account
 }
@@ -56,30 +68,33 @@ export const loadExhange = async (provider, address, dispatch) => {
     return exchange
 }
 
-export const subscribeToEvents = async (exchange, dispatch) => {
+export const subscribeToEvents = async (exchange, dispatch, provider, account) => {
     exchange.on('Deposit', (token, user, amount, balance, event) => {
         dispatch({ type: 'TRANSFER_SUCCESS', event })
-
+        updateBalance(provider, dispatch, account)
     })
 
     exchange.on('Withdraw', (token, user, amount, balance, event) => {
         dispatch({ type: 'TRANSFER_SUCCESS', event })
-
+        updateBalance(provider, dispatch, account)
     })
 
     exchange.on('Order', (id, user, tokenGet, amountGet, tokenGive, amountGive, timestamp, event) => {
         const order = event.args
         dispatch({ type: 'NEW_ORDER_SUCCESS', order, event })
+        updateBalance(provider, dispatch, account)
     })
 
     exchange.on('Trade', (id, user, tokenGet, amountGet, tokenGive, amountGive, creator, timestamp, event) => {
         const order = event.args
         dispatch({ type: 'FILL_ORDER_SUCCESS', order, event })
+        updateBalance(provider, dispatch, account)
     })
 
     exchange.on('Cancel', (id, user, tokenGet, amountGet, tokenGive, amountGive, timestamp, event) => {
         const order = event.args
         dispatch({ type: 'CANCEL_ORDER_SUCCESS', order, event })
+        updateBalance(provider, dispatch, account)
     })
 }
 
