@@ -138,6 +138,9 @@ export const exchange = (state = DEFAULT_EXCHANGE_STATE, action) => {
                     isPending: false,
                     isSuccessful: true
                 },
+                cancelledOrders: {
+                    data: [...state.cancelledOrders.data, action.order]
+                },
                 events: [action.event, ...state.events]
             }
         case 'CANCEL_ORDER_FAIL':
