@@ -55,7 +55,7 @@ const Transactions = () => {
                 </thead>
               )}
               <tbody>
-                {!account || myOpenOrders.length === 0 ? (
+                {!account || (myOpenOrders && myOpenOrders.length === 0) ? (
                   <tr>
                     <td>
                     <Banner text='No open orders'/>

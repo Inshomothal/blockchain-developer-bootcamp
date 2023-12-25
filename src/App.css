@@ -366,8 +366,7 @@ small {
 /* Images */
 
 .logo {
-  width: 35px;
-  height: auto;
+  height: 20%;
   margin: 0 0.5em 0 0;
 }
 
