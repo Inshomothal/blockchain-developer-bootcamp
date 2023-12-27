@@ -24,13 +24,21 @@ const openOrders = state => {
     const filled = filledOrders(state)
     const cancelled = cancelledOrders(state)
 
-    const openOrders = reject(all, (order) => {
+    let openOrders = reject(all, (order) => {
         const orderfilled = filled.some((o) => o.id.toString() === order.id.toString())
         const ordercancelled = cancelled.some((o) => o.id.toString() === order.id.toString())
 
         return (orderfilled || ordercancelled)
 
     })
+
+    // Remove duplicates
+    openOrders = openOrders.filter((order, index, self) =>
+        index === self.findIndex((o) => (
+            o.id.toString() === order.id.toString()
+        ))
+    )
+
 
     return openOrders
 }
@@ -262,7 +270,9 @@ export const orderBookSelector = createSelector(
 
         // Fetch orders
         const buyOrders = get(orders, 'buy', [])
+        console.log ('buyOrders: ', buyOrders)
         const sellOrders = get(orders, 'sell', [])
+        console.log('sellOrders: ', sellOrders)
 
         // Sort orders by token price
         orders = {

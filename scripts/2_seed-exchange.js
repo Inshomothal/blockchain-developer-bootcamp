@@ -38,14 +38,47 @@ async function main() {
     // Give tokens to account[1]
     const sender = accounts[0]
     const receiver = accounts[1]
-    let amount = tokens(10000)
+    let amount = tokens(50000)
 
-    // user1 transfers 10,000 mETH...
+    // user1 transfers 50,000 mETH...
     let transaction, result
+    try {
     transaction = await mETH.connect(sender).transfer(receiver.address, amount)
     result = await transaction.wait()
-    console.log(`Transferred ${amount} tokens from ${sender.address} to ${receiver.address}\n`)
+    if (result.status === 1) {
+        console.log(`Transferred ${amount} mETH from ${sender.address} to ${receiver.address}\n`)
+    } else {
+        console.log(`mETH Transfer failed`)
+    }
+    } catch (e) {
+        console.log(`mETH Transfer failed with error: ${e}`)
+    }
 
+    // user1 transfers 50,000 DAPP...
+    try {
+    transaction = await DAPP.connect(sender).transfer(receiver.address, amount)
+    result = await transaction.wait()
+    if (result.status === 1) {
+    console.log(`Transferred ${amount} DAPP tokens from ${sender.address} to ${receiver.address}\n`)
+    } else {
+        console.log(`DAPP Transfer failed`)
+    }
+    } catch (e) {
+        console.log(`DAPP Transfer failed with error: ${e}`)
+    }
+
+    // user1 transfers 50,000 mDAI...
+    try {
+    transaction = await mDAI.connect(sender).transfer(receiver.address, amount)
+    result = await transaction.wait()
+    if (result.status === 1) {
+    console.log(`Transferred ${amount} mDAI tokens from ${sender.address} to ${receiver.address}\n`)
+    } else {
+        console.log(`mDAI Transfer failed`)
+    }
+    } catch (e) {
+        console.log(`mDAI Transfer failed with error: ${e}`)
+    }
 
 
     // Set up exchange users
@@ -65,7 +98,7 @@ async function main() {
     await transaction.wait()
     console.log(`Deposited ${amount} Ether from ${user1.address}\n`)
 
-    // user2 approves 10,000 mETH...
+    // user2 approves 20,000 mETH...
     transaction = await mETH.connect(user2).approve(exchange.address, amount)
     await transaction.wait()
     console.log(`Approved ${amount} tokens from ${user2.address}\n`)
@@ -74,6 +107,16 @@ async function main() {
     transaction = await exchange.connect(user2).depositToken(mETH.address, amount)
     await transaction.wait()
     console.log(`Deposited ${amount} Ether from ${user2.address}\n`)
+
+    // user1 approves 10,000 mDAI...
+    transaction = await mDAI.connect(user1).approve(exchange.address, amount)
+    await transaction.wait()
+    console.log(`Approved ${amount} tokens from ${user1.address}\n`)
+
+    // user1 deposits 10,000 mDAI...
+    transaction = await exchange.connect(user1).depositToken(mDAI.address, amount)
+    await transaction.wait()
+    console.log(`Deposited ${amount} Ether from ${user1.address}\n`)
 
 
     ///////////////////////////////////////////////////////////////////
