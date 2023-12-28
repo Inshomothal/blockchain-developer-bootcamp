@@ -79,8 +79,11 @@ const filterOrderByToken = (orders, tokens) => {
 
 
     // Grab only orders that are for the selected tokens
-    orders = orders.filter((o) => o.tokenGet === tokens[0].address || o.tokenGet === tokens[1].address)
-    orders = orders.filter((o) => o.tokenGive === tokens[0].address || o.tokenGive === tokens[1].address)
+    orders = orders.filter((o) =>
+        (o.tokenGet === tokens[0].address || o.tokenGet === tokens[1].address) &&
+        (o.tokenGive === tokens[0].address || o.tokenGive === tokens[1].address)
+    )
+
 
     // Now sort by selected tokens
     orders.sort((a,b) => a.tokenGet === tokens[0].address ? ( a.tokenGet - b.tokenGet ):( b.tokenGet - a.tokenGet))
@@ -158,15 +161,20 @@ export const myFilledOrdersSelector = createSelector(
     (orders, tokens, account) => {
         if (!tokens[0] || !tokens[1]) { return }
         
+
         orders = orders.filter((o) => o.user === account || o.creator === account)
+
+
         // Filter orders by token addresses
-        filterOrderByToken(orders, tokens)
+        orders = filterOrderByToken(orders, tokens)
+
 
         // Sort by date ascending
         orders = orders.sort((a,b) => b.timestamp - a.timestamp)
 
         // Decorate orders - add display attributes
         orders = decorateMyFilledOrders(orders, account, tokens)
+
 
         return (orders)
     }
@@ -209,11 +217,8 @@ export const filledOrdersSelector = createSelector(
     tokens,
     (orders, tokens) => {
         if (!tokens[0] || !tokens[1]) { return }
-        orders = filterOrderByToken(orders, tokens)
 
-        // [X] Step 1: sort orders by time ascending
-        // [X] Step 2: decorate orders - add display attributes
-        // Step 3: sort orders by time descending for UI
+        orders = filterOrderByToken(orders, tokens)
 
         // Sort orders by timestamp ascending
         orders = orders.sort((a,b) => a.timestamp - b.timestamp)
@@ -270,9 +275,7 @@ export const orderBookSelector = createSelector(
 
         // Fetch orders
         const buyOrders = get(orders, 'buy', [])
-        console.log ('buyOrders: ', buyOrders)
         const sellOrders = get(orders, 'sell', [])
-        console.log('sellOrders: ', sellOrders)
 
         // Sort orders by token price
         orders = {

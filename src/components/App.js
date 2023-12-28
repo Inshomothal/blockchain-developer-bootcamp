@@ -25,8 +25,10 @@ import Alert from './Alert';
 
 function App() {
   const account = useSelector(state => state.provider.account)
+  const market = useSelector(state => state.exchange.selectedMarket)
 
   const dispatch = useDispatch()
+
 
   const loadBlockchainData = async () => {
 
@@ -46,10 +48,11 @@ function App() {
       loadAccount(provider, dispatch)
     })
 
-    // Token smart Contract
-    const DAPP = config[chainId].DAPP
-    const mETH = config[chainId].mETH
-    await loadTokens(provider, [DAPP.address, mETH.address], dispatch)
+    // Load tokens
+    const DAPP = config[chainId].DAPP.address
+    const mETH = config[chainId].mETH.address
+
+    Object.keys(market).length === 0 ? loadTokens(provider, [DAPP, mETH], dispatch) : loadTokens(provider, market.addresses, dispatch)
 
     // Load exchange smart contract
     const exchangeConfig = config[chainId].exchange

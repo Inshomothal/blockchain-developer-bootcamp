@@ -64,6 +64,7 @@ export const tokens = ( state = DEFALT_TOKENS_STATE, action) => {
 const DEFAULT_EXCHANGE_STATE = {
     loaded: false,
     contract: {},
+    selectedMarket: {},
     transaction: {
         isSuccessful: false
     },
@@ -89,6 +90,11 @@ export const exchange = (state = DEFAULT_EXCHANGE_STATE, action) => {
                 ...state,
                 loaded: true,
                 contract: action.exchange
+            }
+        case 'CHANGE_MARKET':
+            return {
+                ...state,
+                selectedMarket: action.market
             }
 
         // --------------------------------------------------------------------------------------

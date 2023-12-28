@@ -80,8 +80,8 @@ const Transactions = () => {
               <h2>My Transactions</h2>
 
               <div className='tabs'>
-                <button onClick={(e) => tabHandler(e, tabRef, undefined, setShowMyOrders)} ref={tabRef[0]} className='tab tab--active'>Orders</button>
-                <button onClick={(e) => tabHandler(e, tabRef, undefined, setShowMyOrders)} ref={tabRef[1]} className='tab'>Trades</button>
+                <button onClick={(e) => tabHandler(e, tabRef, undefined, setShowMyOrders)} ref={tabRef[0]} className='tab'>Orders</button>
+                <button onClick={(e) => tabHandler(e, tabRef, undefined, setShowMyOrders)} ref={tabRef[1]} className='tab tab--active'>Trades</button>
               </div>
             </div>
 
@@ -98,7 +98,7 @@ const Transactions = () => {
                   return(
                     <tr key={index}>
                       <td>{order.formattedTimestamp}</td>
-                      <td style={{color: `${order.orderClass}`}}>{order.orderSign}{order.token0Amount}</td>
+                      <td style={{color: `${order.orderTypeClass}`}}>{order.orderSign}{order.token0Amount.substring(0, 4)}</td>
                       <td>{finalPrice(order)}</td>
                     </tr>)
                 })

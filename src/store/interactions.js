@@ -98,6 +98,27 @@ export const subscribeToEvents = async (exchange, dispatch, provider, account) =
     })
 }
 
+// --------------------------------------------------------------------------------------
+// CHANGE MARKET
+export const changeMarket = async (provider, dispatch, tokens) => {
+
+    if (!tokens.every(token => ethers.utils.isAddress(token))) {
+        console.error('Invalid token address');
+        return;
+    }
+
+    tokens[0] = new ethers.Contract(tokens[0], TOKEN_ABI , provider)
+    tokens[1] = new ethers.Contract(tokens[1], TOKEN_ABI , provider)
+    const symbols = [await tokens[0].symbol(), await tokens[1].symbol()]
+    const market = {
+        symbols: (`${symbols[0]} / ${symbols[1]}`),
+        addresses: [tokens[0].address, tokens[1].address]
+    }
+    dispatch({type: 'CHANGE_MARKET', market})
+
+
+}
+
 
 // --------------------------------------------------------------------------------------
 // LOAD USER BALANCES (WALLET & EXCHANGE BALANCES)
